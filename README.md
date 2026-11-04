@@ -148,6 +148,9 @@ Também funciona no Netlify, no Vercel ou em qualquer hospedagem de arquivos.
   abra o painel do Supabase e confira se ele está ativo. Se a sala não for criada, o jogo mostra o motivo.
 - **Para testar sozinho**, use uma janela anônima ou outro aparelho para cada jogador. Abas comuns do
   mesmo navegador dividem o mesmo jogador.
+- **Depois de alterar o código:** aumente o número `?v=` nos links de CSS e JS dos arquivos `.html`
+  (por exemplo, de `?v=2` para `?v=3`). Assim os navegadores baixam os arquivos novos em vez de usar
+  os guardados.
 - **Sobre segurança:** o jogo não tem login, e a chave em `js/config.js` é a chave pública do Supabase,
   feita para ficar no navegador. Um aluno que saiba usar as ferramentas de desenvolvedor consegue ver
   as palavras e as classes. Para uma dinâmica em sala isso não costuma ser problema, mas não use o
