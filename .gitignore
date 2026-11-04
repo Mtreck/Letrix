@@ -1,0 +1,9 @@
+# Arquivos da ferramenta de design usada no desenvolvimento (não fazem parte do jogo)
+.agents/
+.claude/
+skills-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

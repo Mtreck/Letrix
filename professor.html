@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letrix — Mediador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="professor">
+  <nav class="menu">
+    <span class="menu-brand">Letrix</span>
+    <a class="menu-link" href="como-jogar.html" target="_blank" title="Abre em outra aba">Como jogar</a>
+  </nav>
+
+  <main class="container">
+
+    <!-- Criar / abrir sala -->
+    <section id="create" class="card join">
+      <h1 class="logo">Letrix</h1>
+      <h2>🎓 Painel do Mediador</h2>
+      <p class="muted">Crie uma sala e mostre o código para a turma.</p>
+      <button id="create-room" class="btn primary big">Criar nova sala</button>
+      <p class="muted">ou abrir uma sala existente:</p>
+      <form id="open-form" class="row">
+        <input id="open-code" maxlength="6" placeholder="CÓDIGO" autocomplete="off">
+        <button class="btn" type="submit">Abrir</button>
+      </form>
+      <p id="create-error" class="error"></p>
+    </section>
+
+    <!-- Painel -->
+    <section id="panel" hidden>
+      <header class="topbar">
+        <div>
+          <small class="muted">Código da sala</small>
+          <div id="room-code" class="code"></div>
+        </div>
+        <div class="join-link">
+          <small class="muted">Alunos entram em</small>
+          <div id="join-url"></div>
+        </div>
+        <span id="room-status" class="chip"></span>
+        <button id="toggle-secret" class="btn ghost">👁 Mostrar segredos</button>
+        <button id="close-room" class="btn ghost" title="Apaga a sala e desconecta todos">Apagar sala</button>
+      </header>
+
+      <div class="scoreboard big">
+        <div class="score team-a">
+          <span>🔵 Time Azul</span><b id="score-a">0</b>
+          <div class="row"><button class="btn small" data-score="a:-1">−1</button><button class="btn small" data-score="a:1">+1</button></div>
+        </div>
+        <div class="score team-b">
+          <span>🔴 Time Vermelho</span><b id="score-b">0</b>
+          <div class="row"><button class="btn small" data-score="b:-1">−1</button><button class="btn small" data-score="b:1">+1</button></div>
+        </div>
+      </div>
+
+      <p id="goal" class="goal"></p>
+
+      <!-- Discussão -->
+      <div id="talk-panel" class="card talk" hidden>
+        <h2>💬 Discussão em andamento</h2>
+        <div id="talk-timer" class="timer" hidden><div class="timer-bar"></div><span class="timer-num"></span></div>
+        <div class="grid tight">
+          <div><h3>🔵 Votos do Azul</h3><ul id="votes-a" class="vote-tally"></ul></div>
+          <div><h3>🔴 Votos do Vermelho</h3><ul id="votes-b" class="vote-tally"></ul></div>
+        </div>
+      </div>
+
+      <!-- Arena: roletas + duelo -->
+      <div class="card arena">
+        <div class="wheels">
+          <div class="wheel-box team-a">
+            <h3>🔵 Time Azul</h3>
+            <canvas id="wheel-a" width="300" height="300"></canvas>
+            <div id="duelist-a" class="duelist-card team-a"><b id="dn-a">—</b><div id="dh-a" class="hearts"></div></div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="wheel-box team-b">
+            <h3>🔴 Time Vermelho</h3>
+            <canvas id="wheel-b" width="300" height="300"></canvas>
+            <div id="duelist-b" class="duelist-card team-b"><b id="dn-b">—</b><div id="dh-b" class="hearts"></div></div>
+          </div>
+        </div>
+        <div id="turn" class="turn"></div>
+        <div id="chances" class="chances"></div>
+        <div id="timer" class="timer" hidden><div class="timer-bar"></div><span class="timer-num"></span></div>
+        <div id="event" class="event"></div>
+        <div id="message" class="message"></div>
+        <div id="phase-info" class="next-info"></div>
+
+        <div class="masks">
+          <div>
+            <small>🔴 Vermelho tenta descobrir a palavra do Azul</small>
+            <div id="mask-a" class="mask"></div>
+            <small id="tried-a" class="muted"></small>
+          </div>
+          <div>
+            <small>🔵 Azul tenta descobrir a palavra do Vermelho</small>
+            <div id="mask-b" class="mask"></div>
+            <small id="tried-b" class="muted"></small>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>🎮 Jogo</h3>
+          <div class="controls">
+            <button id="start-game" class="btn primary big">▶ Começar jogo</button>
+            <div id="run-controls" class="row run-controls">
+              <button id="pause" class="btn big">⏸ Pausar</button>
+              <button id="end-game" class="btn big danger">⏹ Encerrar jogo</button>
+            </div>
+          </div>
+          <h3>⚙️ Ajustes</h3>
+          <label class="inline">🏆 Pontos para vencer
+            <input id="target-score" type="number" min="1" max="50">
+          </label>
+          <label class="inline">❤️ Vidas por jogador
+            <input id="lives-max" type="number" min="1" max="10">
+          </label>
+          <label class="inline">🎯 Chances de cada duelista por duelo
+            <input id="turns-max" type="number" min="1" max="20">
+          </label>
+          <label class="inline">⏱ Segundos por jogada
+            <input id="turn-seconds" type="number" min="0" max="120">
+          </label>
+          <label class="inline">💬 Segundos de discussão
+            <input id="talk-seconds" type="number" min="10" max="600">
+          </label>
+          <small class="muted">Pode mudar a qualquer hora. Vidas valem a partir da próxima rodada.
+            Jogada com 0 segundos = sem limite. Uma chance acaba quando o duelista erra ou o tempo dele acaba.</small>
+        </div>
+
+        <div class="card">
+          <h3>📝 Palavras</h3>
+          <label>Lista de palavras, uma por linha
+            <textarea id="word-list" class="secret" rows="7" placeholder="Deixe vazio para o jogo sortear da lista dele"></textarea>
+          </label>
+          <small class="muted">A cada rodada o jogo sorteia duas palavras desta lista, sem repetir.
+            Fica borrada para você poder projetar a tela; clique nela para editar.</small>
+          <div class="current">
+            <div>Azul: <b id="cur-a" class="secret"></b>
+              <button class="btn small" data-hint="a">💡 Dar letra p/ Vermelho</button></div>
+            <div>Vermelho: <b id="cur-b" class="secret"></b>
+              <button class="btn small" data-hint="b">💡 Dar letra p/ Azul</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card team-a">
+          <div class="row between">
+            <h3>🔵 Time Azul (<span id="count-a">0</span>)</h3>
+            <button id="shuffle" class="btn small ghost">🔀 Embaralhar times</button>
+          </div>
+          <ul id="list-a" class="players"></ul>
+        </div>
+        <div class="card team-b">
+          <h3>🔴 Time Vermelho (<span id="count-b">0</span>)</h3>
+          <ul id="list-b" class="players"></ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📜 Jogadas do duelo atual</h3>
+        <ul id="guess-feed" class="guess-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.75.0/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/roleta.js"></script>
+  <script src="js/professor.js"></script>
+</body>
+</html>

@@ -1,0 +1,645 @@
+/* =========================================================
+   Letrix — visual "impressão risográfica"
+   Dois times = duas tintas. Azul + vermelho sobrepostos = roxo (mediador / neutro).
+   Sombras são "erro de registro" da impressora: blocos sólidos deslocados.
+   ========================================================= */
+
+:root {
+  --paper: #eef0f6;
+  --paper-2: #e2e5f0;
+  --ink: #1e1b3a;
+  --ink-soft: #5d5a7a;
+  --blue: #2e4be0;
+  --blue-tint: #dfe4fc;
+  --red: #f2435a;
+  --red-deep: #c92a40;
+  --red-tint: #fde1e5;
+  --over: #5b2d8c;          /* azul + vermelho */
+  --over-tint: #ebe2f6;
+  --yellow: #ffd23f;
+  --green: #138a5b;
+  --line: 2px solid var(--ink);
+  --team: var(--over);      /* troca conforme o time */
+  --team-tint: var(--over-tint);
+  --display: 'Bricolage Grotesque', 'Arial Black', system-ui, sans-serif;
+  --body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+}
+body.team-a, .team-a { --team: var(--blue); --team-tint: var(--blue-tint); }
+body.team-b, .team-b { --team: var(--red); --team-tint: var(--red-tint); }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--body);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* retícula leve, como papel impresso */
+  background-image: radial-gradient(rgba(30, 27, 58, .07) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+}
+/* faixa de tinta no topo: mostra de que time é este celular */
+body.aluno { border-top: 10px solid var(--team); }
+
+.container { max-width: 1120px; margin: 0 auto; padding: 20px 16px 32px; }
+.container.narrow { max-width: 520px; }
+
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; margin: 0 0 12px; }
+h2 { font-size: 1.5rem; font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+small { font-size: .88rem; }
+.muted { color: var(--ink-soft); }
+.error { color: var(--red-deep); font-weight: 700; min-height: 1.2em; }
+
+:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ink); }
+
+/* ---------- Folhas (cards) ---------- */
+.card {
+  background: #fff;
+  border: var(--line);
+  border-radius: 6px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 5px 5px 0 var(--team);
+}
+.card.team-a, .card.team-b { box-shadow: 6px 6px 0 var(--team); }
+
+/* ---------- Logo com erro de registro ---------- */
+.logo {
+  font-family: var(--display);
+  font-size: clamp(3rem, 14vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: .95;
+  margin: 0 0 10px;
+  color: var(--ink);
+  text-shadow: -4px -2px 0 var(--blue), 4px 3px 0 var(--red);
+}
+
+/* ---------- Entrada ---------- */
+.join { text-align: center; margin-top: 7vh; padding: 28px 22px; box-shadow: 8px 8px 0 var(--over); }
+.join h2 { font-size: 1.2rem; color: var(--over); }
+
+label { display: block; text-align: left; font-weight: 700; margin: 12px 0; }
+input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--line);
+  border-radius: 6px;
+  outline: none;
+}
+input:focus { background: #fff; box-shadow: 3px 3px 0 var(--team); }
+#join-code, #open-code {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  text-align: center;
+}
+label.inline { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 400; }
+label.inline input { width: 84px; margin: 0; text-align: center; font-weight: 700; }
+
+/* ---------- Botões: carimbos que afundam ---------- */
+.btn {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  color: var(--ink);
+  background: #fff;
+  border: var(--line);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform .08s, box-shadow .08s;
+}
+.btn:hover:not(:disabled) { background: var(--paper); }
+.btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+.btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.btn.primary, .btn.talk-btn { background: var(--over); color: #fff; }
+.btn.primary:hover:not(:disabled), .btn.talk-btn:hover:not(:disabled) { background: #4a2273; }
+.btn.spin { background: var(--yellow); }
+.btn.spin:hover:not(:disabled) { background: #ffc800; }
+.btn.danger { color: var(--red-deep); }
+.btn.danger-solid { background: var(--red); color: #fff; }
+.btn.ghost { background: transparent; box-shadow: none; border-style: dashed; }
+.btn.big { width: 100%; padding: 15px; font-size: 1.15rem; margin-top: 10px; }
+.btn.small { padding: 4px 9px; font-size: .85rem; box-shadow: 2px 2px 0 var(--ink); }
+.btn.small:active:not(:disabled) { transform: translate(2px, 2px); }
+#leave { display: block; margin: 8px auto 24px; }
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row.between { justify-content: space-between; }
+.row input { flex: 1; margin: 0; }
+
+/* ---------- Barra do topo ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 18px;
+  padding: 12px 16px;
+  background: #fff;
+  border: var(--line);
+  border-radius: 6px;
+}
+.aluno .topbar strong { font-family: var(--display); font-size: 1.3rem; font-weight: 800; }
+.chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--team);
+  color: #fff;
+  font-weight: 700;
+  font-size: .95rem;
+}
+.professor .chip { background: var(--over); }
+
+.code {
+  font-family: var(--display);
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: -3px -1px 0 var(--blue), 3px 2px 0 var(--red);
+}
+.join-link { flex: 1; min-width: 200px; word-break: break-all; font-weight: 700; }
+
+/* ---------- Placar: duas tintas lado a lado ---------- */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 18px;
+  border: var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.score {
+  padding: 10px 14px;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.score.team-a { background: var(--blue); }
+.score.team-b { background: var(--red); border-left: var(--line); }
+.score b {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.scoreboard.big .score { padding: 14px; }
+.scoreboard.big .score b { font-size: 4.4rem; }
+.score .row { justify-content: center; margin-top: 6px; }
+.score .btn.small { background: rgba(255, 255, 255, .92); }
+
+/* ---------- Status ---------- */
+.status {
+  text-align: center;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: var(--team-tint);
+}
+.pulse { animation: pulse 1s infinite alternate; }
+@keyframes pulse { to { transform: scale(1.025); } }
+
+/* ---------- Palavras ---------- */
+.big-word {
+  font-family: var(--display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: .06em;
+  margin: 4px 0;
+  word-break: break-word;
+  color: var(--team);
+}
+.my-word { background: var(--team-tint); border-style: dashed; box-shadow: none; }
+
+/* Peças da forca: o elemento principal do jogo */
+.mask { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0; }
+.slot {
+  width: 40px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--paper);
+  border: 2px dashed var(--ink-soft);
+  border-radius: 6px;
+}
+.slot.open {
+  background: #fff;
+  border: var(--line);
+  box-shadow: 3px 3px 0 var(--team);
+  color: var(--ink);
+  animation: stamp .35s ease-out;
+}
+.slot.dash { border: none; background: none; }
+.piece { display: inline-flex; gap: inherit; }
+.gap { width: 16px; }
+.mask.small { gap: 4px; margin: 8px 0; }
+.mask.small .slot { width: 26px; height: 32px; font-size: 1.1rem; }
+.mask.small .slot.open { box-shadow: 2px 2px 0 var(--team); }
+@keyframes stamp {
+  0% { transform: scale(1.6) rotate(-6deg); opacity: 0; }
+  70% { transform: scale(.94); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* No painel, cada palavra é atacada pelo time rival: a peça leva a cor de quem descobriu */
+.masks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+.masks > div { background: var(--paper); border: var(--line); border-radius: 6px; padding: 12px; }
+.masks > div:first-child { --team: var(--red); }
+.masks > div:last-child { --team: var(--blue); }
+
+/* ---------- Duelo ---------- */
+.duel { text-align: center; box-shadow: 6px 6px 0 var(--yellow), 6px 6px 0 2px var(--ink); }
+.duelists { display: flex; align-items: center; gap: 8px; }
+.duelist-card {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  background: var(--team-tint);
+  border: var(--line);
+  border-radius: 6px;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+.duelist-card b {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.duelist-card.active {
+  background: var(--yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--team);
+}
+.hearts { font-size: 1rem; letter-spacing: 1px; }
+.vs-small { font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: var(--over); }
+
+.turn { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 14px 0 6px; }
+.event { font-weight: 700; min-height: 1.4em; padding: 6px; }
+.callout {
+  background: var(--yellow);
+  border: var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin: 10px 0;
+  animation: pulse .6s infinite alternate;
+}
+
+/* ---------- Cronômetro: régua que encolhe ---------- */
+.timer {
+  position: relative;
+  height: 32px;
+  margin: 10px auto;
+  max-width: 520px;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.timer-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--team);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 8px, rgba(255, 255, 255, .18) 8px 16px);
+  transition: width .25s linear;
+}
+.timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--ink);
+  text-shadow: 0 0 4px #fff, 0 0 2px #fff;
+}
+.timer.urgent .timer-bar { background-color: var(--red); }
+.timer.urgent .timer-num { animation: pulse .5s infinite alternate; }
+
+/* ---------- Teclado ---------- */
+.keyboard { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 12px 0; }
+.key {
+  padding: 11px 0;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  background: #fff;
+  border: var(--line);
+  border-radius: 6px;
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform .06s, box-shadow .06s;
+}
+.key:not(:disabled):hover { background: var(--yellow); }
+.key:not(:disabled):active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+.key:disabled { cursor: not-allowed; box-shadow: none; transform: translateY(3px); }
+.key.hit { background: var(--green); color: #fff; }
+.key.miss { background: var(--paper-2); color: var(--ink-soft); text-decoration: line-through; }
+.key:disabled:not(.hit):not(.miss) { opacity: .4; }
+
+.word-form { display: flex; gap: 8px; margin-bottom: 10px; }
+.word-form input { margin: 0; }
+.word-form .btn { white-space: nowrap; }
+
+/* ---------- Listas ---------- */
+.guess-list { list-style: none; padding: 0; margin: 12px 0 0; text-align: left; max-height: 260px; overflow-y: auto; }
+.guess-list li {
+  padding: 7px 12px;
+  margin-bottom: 6px;
+  background: var(--team-tint);
+  border-left: 5px solid var(--team);
+  border-radius: 0 6px 6px 0;
+}
+.guess-list li.muted { background: none; border: none; }
+
+.names { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.names li { padding: 5px 12px; background: var(--team-tint); border: 1.5px solid var(--ink); border-radius: 999px; }
+.names li.out, .players li.out { opacity: .45; text-decoration: line-through; }
+
+/* ---------- Painel do mediador ---------- */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.grid > .card { margin-bottom: 0; }
+.grid.tight { margin-bottom: 0; }
+
+.current { margin-top: 14px; display: grid; gap: 8px; padding-top: 12px; border-top: 2px dashed var(--paper-2); }
+.secret { filter: blur(7px); user-select: none; transition: filter .2s; }
+.secret.visible { filter: none; user-select: auto; }
+
+.controls { display: grid; gap: 8px; margin-bottom: 14px; }
+.controls .btn.big { margin-top: 0; }
+
+.arena { text-align: center; padding: 20px; }
+.wheels { display: flex; align-items: flex-start; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.wheel-box { text-align: center; width: 300px; max-width: 100%; }
+.wheel-box h3 { color: var(--team); font-size: 1.3rem; }
+.wheel-box canvas { max-width: 100%; height: auto; }
+.wheel-box .duelist-card { margin-top: 10px; }
+.vs {
+  align-self: center;
+  font-family: var(--display);
+  font-size: 3.4rem;
+  font-weight: 800;
+  color: var(--ink);
+  text-shadow: -3px -1px 0 var(--blue), 3px 2px 0 var(--red);
+}
+.message { font-family: var(--display); font-size: 1.35rem; font-weight: 800; color: var(--over); min-height: 1.4em; }
+
+.players { list-style: none; padding: 0; margin: 0; }
+.players li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1.5px dashed var(--paper-2);
+}
+.players li:last-child { border-bottom: none; }
+.players li > span:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-weight: 700; }
+.players li small { font-weight: 400; }
+.players li > span:last-child { white-space: nowrap; }
+
+/* ---------- Classe secreta: envelope lacrado ---------- */
+.role-card {
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  border-style: dashed;
+  box-shadow: 5px 5px 0 var(--over);
+  background-image: repeating-linear-gradient(45deg, transparent 0 10px, rgba(91, 45, 140, .05) 10px 20px);
+}
+.role-cover { font-size: 1.1rem; padding: 10px; }
+.role-name { font-family: var(--display); font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
+.role-extra { margin: 10px 0; }
+.role-extra .reveal {
+  display: inline-block;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  padding: 0 6px;
+  background: var(--yellow);
+}
+.role-card.role-impostor {
+  border-style: solid;
+  box-shadow: -5px -3px 0 var(--blue), 5px 4px 0 var(--red); /* registro "errado": nem um time, nem outro */
+}
+.role-card.role-espiao { box-shadow: 5px 5px 0 var(--green); }
+.role-card.role-vidente { box-shadow: 5px 5px 0 var(--over); }
+.role-card.role-guardiao { box-shadow: 5px 5px 0 var(--yellow), 5px 5px 0 2px var(--ink); }
+
+/* ---------- Discussão e votação ---------- */
+.talk { text-align: center; box-shadow: 6px 6px 0 var(--over); }
+.talk h2 { color: var(--over); }
+.talk h3 { margin-top: 18px; }
+.vision { background: var(--over-tint); border: 2px dashed var(--over); border-radius: 6px; padding: 12px; margin-top: 14px; }
+.vote-list { display: grid; gap: 8px; margin: 8px 0; }
+.vote {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: var(--line);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+}
+.vote.chosen { background: var(--ink); color: #fff; box-shadow: 3px 3px 0 var(--team); }
+.vote:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.vote-tally { list-style: none; padding: 0; margin: 0; text-align: left; }
+.vote-tally li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1.5px dashed var(--paper-2); }
+
+/* ---------- Efeitos das jogadas ---------- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 20;
+}
+body.fx-hit::after { background: rgba(19, 138, 91, .3); animation: flash .6s; }
+body.fx-miss::after { background: rgba(242, 67, 90, .38); animation: flash .6s; }
+body.fx-out::after { background: rgba(30, 27, 58, .6); animation: flash 1.2s; }
+body.fx-win::after { background: rgba(255, 210, 63, .55); animation: flash 1.5s 2; }
+body.fx-spin::after { background: rgba(91, 45, 140, .28); animation: flash .8s; }
+body.fx-miss .container, body.fx-out .container { animation: shake .45s; }
+body.fx-win .container { animation: bounce .6s 2; }
+@keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes shake {
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+@keyframes bounce { 50% { transform: scale(1.02); } }
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 140px);
+  max-width: calc(100% - 32px);
+  padding: 12px 20px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 var(--yellow);
+  transition: transform .25s;
+  z-index: 30;
+}
+#toast.show { transform: translate(-50%, 0); }
+
+/* ---------- Celular ---------- */
+@media (max-width: 760px) {
+  .grid, .masks { grid-template-columns: 1fr; }
+  .vs { width: 100%; font-size: 2.4rem; }
+  .code { font-size: 2.2rem; }
+  .scoreboard.big .score b { font-size: 3rem; }
+  .slot { width: 32px; height: 42px; font-size: 1.4rem; }
+}
+@media (max-width: 400px) {
+  .slot { width: 27px; height: 36px; font-size: 1.2rem; }
+  .keyboard { gap: 4px; }
+  .key { font-size: 1.1rem; padding: 10px 0; }
+  .word-form { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+a.btn { display: inline-block; text-align: center; text-decoration: none; }
+a.btn.big { display: block; }
+
+/* ---------- Menu do topo (painel do mediador) ---------- */
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px max(16px, calc((100% - 1088px) / 2));  /* alinha com o conteúdo */
+  background: #fff;
+  border-bottom: var(--line);
+  box-shadow: 0 4px 0 var(--over);
+  margin-bottom: 8px;
+}
+.menu-brand {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  text-shadow: -2px -1px 0 var(--blue), 2px 2px 0 var(--red);
+}
+.menu-link {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 16px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+}
+.menu-link:hover { background: var(--yellow); border-color: var(--ink); }
+
+/* ---------- Ciclo automático ---------- */
+.goal {
+  margin: -6px 0 16px;
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--over);
+}
+.chances { font-weight: 700; color: var(--ink-soft); margin-bottom: 4px; }
+.next-info {
+  min-height: 1.4em;
+  margin: 6px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--over);
+}
+.run-controls { flex-wrap: nowrap; }
+.run-controls .btn.big { margin-top: 0; }
+.status.final { background: var(--yellow); font-size: 1.5rem; }
+
+textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--line);
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+}
+textarea:focus { background: #fff; box-shadow: 3px 3px 0 var(--over); }
+.secret:focus { filter: none; user-select: auto; }   /* dá para editar mesmo com os segredos escondidos */
+
+/* Mediador: faixa de aviso quando o jogo está pausado */
+body.professor.paused .arena { box-shadow: 6px 6px 0 var(--yellow), 6px 6px 0 2px var(--ink); }
+body.professor.paused .arena::before {
+  content: '⏸ Jogo pausado';
+  display: block;
+  margin: -20px -20px 16px;
+  padding: 8px;
+  font-family: var(--display);
+  font-weight: 800;
+  background: var(--yellow);
+  border-bottom: var(--line);
+}
+
+/* Aluno: tela de pausa por cima de tudo */
+.paused-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(238, 240, 246, .88);
+  backdrop-filter: blur(3px);
+}
+.paused-overlay[hidden] { display: none; }
+.paused-card {
+  max-width: 360px;
+  padding: 26px 24px;
+  text-align: center;
+  background: #fff;
+  border: var(--line);
+  border-radius: 30px 10px 30px 10px;
+  box-shadow: 7px 7px 0 var(--yellow), 7px 7px 0 2px var(--ink);
+}
+.paused-icon { font-size: 3rem; line-height: 1; margin-bottom: 8px; }

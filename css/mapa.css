@@ -1,0 +1,300 @@
+/* Página "Como jogar" — mapa do tesouro (usa as cores de style.css) */
+
+body.mapa { padding-bottom: 110px; overflow-x: hidden; }
+
+/* ---------- Cabeçalho ---------- */
+.map-head {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 24px 0;
+  text-align: center;
+}
+.back {
+  position: absolute;
+  left: 24px;
+  top: 26px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 2px dashed var(--ink);
+  border-radius: 999px;
+  background: #fff;
+}
+.back:hover { background: var(--yellow); }
+.map-head .logo { font-size: clamp(3.4rem, 9vw, 6rem); margin-bottom: 0; }
+.tagline {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  font-weight: 700;
+  color: var(--over);
+  margin: 4px 0 0;
+  transform: rotate(-2deg);
+}
+.compass {
+  position: absolute;
+  right: 26px;
+  top: 18px;
+  width: 104px;
+  height: 104px;
+  transform: rotate(12deg);
+  filter: drop-shadow(4px 4px 0 var(--blue));
+}
+.coast { display: block; width: 100%; height: 30px; margin-top: 18px; }
+
+/* ---------- Mapa ---------- */
+.map {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 90px 24px 40px;
+}
+.trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+.trail-bg { fill: none; stroke: var(--ink); stroke-width: 4; stroke-dasharray: 2 14; stroke-linecap: round; opacity: .45; }
+.trail-done { fill: none; stroke: var(--red); stroke-width: 6; stroke-dasharray: 16 12; stroke-linecap: round; }
+
+.start-mark {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
+  padding: 6px 16px;
+  font-family: var(--display);
+  font-weight: 800;
+  background: var(--yellow);
+  border: var(--line);
+  border-radius: 40% 60% 55% 45% / 60% 45% 55% 40%;
+  z-index: 2;
+}
+
+.token {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 4px 4px 0 var(--red);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Paradas: zigue-zague, cartão de um lado, alfinete do outro */
+.stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  align-items: center;
+  margin-bottom: 96px;
+  z-index: 1;
+}
+.stop:nth-of-type(even) { grid-template-columns: 190px minmax(0, 1fr); }
+.stop:nth-of-type(even) .pin { order: -1; }
+.stop:last-of-type { margin-bottom: 20px; }
+
+.stop-card {
+  max-width: 760px;
+  padding: 26px 30px;
+  background: #fff;
+  border: var(--line);
+  border-radius: 34px 10px 30px 12px / 12px 30px 10px 34px;  /* cantos tortos, como papel recortado */
+  box-shadow: 7px 7px 0 var(--blue);
+  transform: rotate(-.8deg);
+  transition: filter .5s, opacity .5s, transform .5s;
+}
+.stop:nth-of-type(even) .stop-card {
+  justify-self: end;
+  box-shadow: 7px 7px 0 var(--red);
+  transform: rotate(.8deg);
+}
+.stop-card h2 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); font-weight: 800; color: var(--ink); margin-bottom: 10px; }
+.stop-card p { font-size: clamp(1.1rem, 1.8vw, 1.35rem); margin: 0 0 14px; max-width: 62ch; }
+.ink-a { color: var(--blue); }
+.ink-b { color: var(--red-deep); }
+
+.pin {
+  justify-self: center;
+  width: 78px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--ink);
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+  box-shadow: 4px 4px 0 var(--ink);
+  cursor: pointer;
+  transition: background .3s, transform .3s;
+}
+.pin:hover { transform: rotate(-8deg) scale(1.05); }
+.stop.done .pin { background: var(--over-tint); }
+.stop.current .pin { background: var(--yellow); transform: scale(1.12); }
+.pin.x {
+  width: 110px;
+  height: 110px;
+  font-size: 4rem;
+  color: var(--red);
+  border-width: 4px;
+  box-shadow: -5px -3px 0 var(--blue), 5px 4px 0 var(--red);
+}
+.treasure .stop-card { box-shadow: -6px -4px 0 var(--blue), 7px 6px 0 var(--red); }
+
+/* Paradas ainda não visitadas ficam na névoa */
+.stop.fog .stop-card { filter: blur(6px); opacity: .3; transform: rotate(0) scale(.97); }
+.stop.fog .pin { opacity: .45; }
+
+/* ---------- Conteúdo das paradas ---------- */
+.two-words { display: flex; gap: 14px; flex-wrap: wrap; }
+.mini {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 14px;
+  background: var(--team-tint);
+  border: 2px solid var(--ink);
+  border-radius: 22px 8px 22px 8px;
+}
+.mini small { display: block; font-weight: 700; }
+.mini .mask { justify-content: flex-start; }
+
+.code-tiles { display: flex; gap: 10px; }
+.code-tiles span {
+  width: 58px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 2.3rem;
+  font-weight: 800;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--over);
+}
+.code-tiles span:nth-child(odd) { transform: rotate(-4deg); }
+.code-tiles span:nth-child(even) { transform: rotate(3deg); }
+
+.roles { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.roles li {
+  display: grid;
+  grid-template-columns: 46px 110px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  font-size: 1.1rem;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+}
+.roles .r-emoji { font-size: 1.8rem; text-align: center; }
+.roles b { font-family: var(--display); font-size: 1.2rem; }
+.roles .r-impostor { background: var(--ink); color: #fff; box-shadow: -3px -2px 0 var(--blue), 3px 3px 0 var(--red); }
+
+.outcomes { display: flex; gap: 16px; flex-wrap: wrap; }
+.bubble {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  border: var(--line);
+  border-radius: 28px;
+}
+.bubble::after {      /* rabinho de balão de fala */
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 34px;
+  width: 22px;
+  height: 22px;
+  background: inherit;
+  border-right: var(--line);
+  border-bottom: var(--line);
+  transform: rotate(45deg) skew(12deg, 12deg);
+}
+.bubble.good { background: #d8f3e6; }
+.bubble.bad { background: var(--red-tint); }
+
+.mini-wheels { display: flex; align-items: center; gap: 18px; }
+.mini-wheel {
+  width: 96px;
+  height: 96px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+}
+.mini-wheel.a { background: conic-gradient(var(--yellow) 0 25%, #5a72f0 0 50%, var(--blue) 0 75%, #8597f5 0); }
+.mini-wheel.b { background: conic-gradient(#f7707f 0 25%, var(--yellow) 0 50%, var(--red) 0 75%, #fa9aa6 0); }
+.stop.current .mini-wheel { animation: whirl 2.4s cubic-bezier(.2, .7, .2, 1) 1; }
+.vs-mini { font-family: var(--display); font-size: 2rem; font-weight: 800; color: var(--over); }
+@keyframes whirl { to { transform: rotate(1080deg); } }
+
+.rules { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.rules li {
+  position: relative;
+  font-size: 1.2rem;
+  padding: 8px 0 8px 48px;
+  border-bottom: 2px dashed var(--paper-2);
+}
+.rules li:last-child { border-bottom: none; }
+.rules li span { position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 1.6rem; width: 36px; text-align: center; }
+
+.cycle { display: block; width: 320px; max-width: 100%; height: auto; margin: 0 auto; }
+
+/* ---------- Controles de apresentação ---------- */
+.presenter {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #fff;
+  border: var(--line);
+  border-radius: 999px;
+  box-shadow: 5px 5px 0 var(--over);
+  z-index: 10;
+}
+.presenter .btn { border-radius: 999px; min-width: 52px; font-size: 1.15rem; }
+#step-label { font-family: var(--display); font-weight: 800; min-width: 74px; text-align: center; }
+body.all .presenter #prev, body.all .presenter #next, body.all #step-label { display: none; }
+
+/* ---------- Celular / tela estreita ---------- */
+@media (max-width: 800px) {
+  .compass { width: 64px; height: 64px; right: 12px; top: 70px; }
+  .back { position: static; display: inline-block; margin-bottom: 14px; }
+  .map { padding: 80px 12px 30px; }
+  .stop, .stop:nth-of-type(even) { grid-template-columns: 74px minmax(0, 1fr); margin-bottom: 60px; }
+  .stop .pin { order: -1; width: 56px; height: 56px; font-size: 1.5rem; }
+  .pin.x { width: 64px; height: 64px; font-size: 2.4rem; }
+  .stop-card { padding: 18px; }
+  .roles li { grid-template-columns: 36px 1fr; border-radius: 18px; }
+  .roles li > span:last-child { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stop-card { transition: none; }
+}
+
+@media print {
+  .presenter, .token, .back { display: none; }
+  .stop.fog .stop-card { filter: none; opacity: 1; }
+}

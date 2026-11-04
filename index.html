@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="aluno">
+  <main class="container narrow">
+
+    <!-- Tela de entrada -->
+    <section id="join" class="card join">
+      <h1 class="logo">Letrix</h1>
+      <p class="muted">Digite o código que o professor mostrou e seu nome.</p>
+      <form id="join-form">
+        <label>Código da sala
+          <input id="join-code" maxlength="6" autocomplete="off" placeholder="EX: KMTR" required>
+        </label>
+        <label>Seu nome
+          <input id="join-name" maxlength="20" autocomplete="off" placeholder="Seu nome" required>
+        </label>
+        <button class="btn primary big" type="submit">Entrar</button>
+      </form>
+      <p id="join-error" class="error"></p>
+    </section>
+
+    <!-- Tela do jogo -->
+    <section id="game" hidden>
+      <header class="topbar">
+        <strong id="me-name"></strong>
+        <span id="me-lives" class="hearts"></span>
+        <span id="me-team" class="chip"></span>
+      </header>
+
+      <div class="scoreboard">
+        <div class="score team-a"><span>🔵 Azul</span><b id="score-a">0</b></div>
+        <div class="score team-b"><span>🔴 Vermelho</span><b id="score-b">0</b></div>
+      </div>
+
+      <p id="goal" class="goal"></p>
+
+      <div id="status" class="card status"></div>
+
+      <!-- Classe secreta -->
+      <div id="role-card" class="card role-card" hidden>
+        <div id="role-cover" class="role-cover">👆 Toque para ver sua <b>classe secreta</b><br><small>Esconda a tela dos colegas!</small></div>
+        <div id="role-body" hidden>
+          <div id="role-name" class="role-name"></div>
+          <p id="role-desc"></p>
+          <div id="role-extra" class="role-extra"></div>
+          <small class="muted">Toque de novo para esconder.</small>
+        </div>
+      </div>
+
+      <!-- Discussão -->
+      <div id="talk" class="card talk" hidden>
+        <h2>💬 Discussão!</h2>
+        <p>Conversem com o time: <b>qual será a palavra rival?</b> E... <b>quem é o impostor?</b></p>
+        <div id="talk-timer" class="timer" hidden><div class="timer-bar"></div><span class="timer-num"></span></div>
+
+        <div id="vision" class="vision" hidden>
+          <h3>🔮 Sua visão: escolha uma letra</h3>
+          <div id="vision-keyboard" class="keyboard"></div>
+        </div>
+
+        <h3>🗳️ Quem é o impostor?</h3>
+        <div id="vote-list" class="vote-list"></div>
+        <small id="vote-info" class="muted"></small>
+      </div>
+
+      <!-- Duelo estilo forca -->
+      <div id="duel" class="card duel" hidden>
+        <div class="duelists">
+          <div id="dc-a" class="duelist-card team-a"><b id="dn-a"></b><div id="dh-a" class="hearts"></div></div>
+          <div class="vs-small">VS</div>
+          <div id="dc-b" class="duelist-card team-b"><b id="dn-b"></b><div id="dh-b" class="hearts"></div></div>
+        </div>
+        <div id="turn" class="turn"></div>
+        <div id="chances" class="chances"></div>
+        <div id="timer" class="timer" hidden><div class="timer-bar"></div><span class="timer-num"></span></div>
+        <div id="event" class="event"></div>
+
+        <div id="my-turn" hidden>
+          <div class="callout">🎯 SUA VEZ! Chute uma letra ou a palavra inteira.</div>
+          <div id="turn-mask" class="mask"></div>
+          <div id="keyboard" class="keyboard"></div>
+          <form id="word-form" class="word-form">
+            <input id="word-input" maxlength="40" autocomplete="off" placeholder="Chutar a palavra inteira">
+            <button class="btn danger-solid" type="submit">Chutar palavra</button>
+          </form>
+          <small class="muted">Letra errada: −1 ❤️ &nbsp;·&nbsp; Palavra errada: −2 ❤️ &nbsp;·&nbsp; Letra certa: joga de novo! &nbsp;·&nbsp; Acabou o tempo: perde a vez!</small>
+        </div>
+        <ul id="guess-list" class="guess-list"></ul>
+      </div>
+
+      <div id="words" hidden>
+        <div class="card">
+          <small>🕵️ Palavra do time rival (vocês precisam descobrir)</small>
+          <div id="rival-mask" class="mask"></div>
+          <small id="rival-info" class="muted"></small>
+        </div>
+        <div class="card my-word">
+          <small>🤫 Palavra do SEU time — não conte para o outro time!</small>
+          <div id="my-word-mask" class="mask small"></div>
+          <div id="my-word" class="big-word"></div>
+          <small class="muted">As letras que aparecem acima já foram descobertas pelo time rival.</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="team-title">Seu time</h3>
+        <ul id="team-list" class="names"></ul>
+      </div>
+
+      <button id="leave" class="btn ghost">Sair da sala</button>
+    </section>
+
+    <!-- Jogo pausado pelo mediador -->
+    <div id="paused" class="paused-overlay" hidden>
+      <div class="paused-card">
+        <div class="paused-icon">⏸</div>
+        <h2>Jogo pausado</h2>
+        <p>Espere o mediador continuar. O tempo também está parado.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.75.0/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/aluno.js"></script>
+</body>
+</html>

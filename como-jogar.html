@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letrix — Como jogar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/mapa.css">
+</head>
+<body class="mapa">
+
+  <header class="map-head">
+    <a class="back" id="back" href="professor.html">← Voltar ao painel</a>
+    <div class="title-block">
+      <h1 class="logo">Letrix</h1>
+      <p class="tagline">Siga a trilha até o tesouro</p>
+    </div>
+    <svg class="compass" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="54" fill="#fff" stroke="#1e1b3a" stroke-width="3"/>
+      <circle cx="60" cy="60" r="44" fill="none" stroke="#1e1b3a" stroke-width="1.5" stroke-dasharray="3 5"/>
+      <path d="M60 10 L70 60 L60 110 L50 60 Z" fill="#1e1b3a"/>
+      <path d="M60 10 L70 60 L50 60 Z" fill="#f2435a"/>
+      <path d="M10 60 L60 52 L110 60 L60 68 Z" fill="#2e4be0" opacity=".85"/>
+      <circle cx="60" cy="60" r="6" fill="#ffd23f" stroke="#1e1b3a" stroke-width="2"/>
+      <text x="60" y="8" text-anchor="middle" font-size="0">N</text>
+    </svg>
+    <svg class="coast" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 20 Q 50 0 100 20 T 200 20 T 300 20 T 400 20 T 500 20 T 600 20 T 700 20 T 800 20 T 900 20 T 1000 20 T 1100 20 T 1200 20"
+            fill="none" stroke="#1e1b3a" stroke-width="2.5" stroke-dasharray="10 8"/>
+    </svg>
+  </header>
+
+  <main class="map" id="map">
+    <svg class="trail" id="trail" aria-hidden="true">
+      <defs>
+        <mask id="trail-mask" maskUnits="userSpaceOnUse">
+          <path id="trail-reveal" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+        </mask>
+      </defs>
+      <path id="trail-bg" class="trail-bg"/>
+      <path id="trail-done" class="trail-done" mask="url(#trail-mask)"/>
+    </svg>
+    <div class="start-mark" id="start">Partida</div>
+    <div class="token" id="token" aria-hidden="true">⛵</div>
+
+    <!-- 1 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Dois times, duas palavras</h2>
+        <p>A turma se divide em <b class="ink-a">Time Azul</b> e <b class="ink-b">Time Vermelho</b>.
+          Cada time recebe uma palavra secreta e precisa descobrir a palavra do outro.</p>
+        <div class="two-words">
+          <div class="mini team-a">
+            <small>O Azul guarda</small>
+            <div class="mask small"><span class="slot open">P</span><span class="slot open">I</span><span class="slot open">P</span><span class="slot open">O</span><span class="slot open">C</span><span class="slot open">A</span></div>
+            <small>e caça</small>
+            <div class="mask small"><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
+          </div>
+          <div class="mini team-b">
+            <small>O Vermelho guarda</small>
+            <div class="mask small"><span class="slot open">F</span><span class="slot open">O</span><span class="slot open">G</span><span class="slot open">U</span><span class="slot open">E</span><span class="slot open">T</span><span class="slot open">E</span></div>
+            <small>e caça</small>
+            <div class="mask small"><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
+          </div>
+        </div>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 1">1</button>
+    </section>
+
+    <!-- 2 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Entre na sala</h2>
+        <p>Abra o link no celular, digite o código que está no telão e o seu nome.
+          O jogo coloca você no time que tem menos gente.</p>
+        <div class="code-tiles" aria-label="Exemplo de código">
+          <span>K</span><span>M</span><span>T</span><span>R</span>
+        </div>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 2">2</button>
+    </section>
+
+    <!-- 3 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Descubra sua classe secreta</h2>
+        <p>Toque no cartão do celular para ver. Esconda a tela: ninguém pode saber quem você é!</p>
+        <ul class="roles">
+          <li><span class="r-emoji">🕵️</span><b>Espião</b><span>Ganha uma letra da palavra rival a cada discussão.</span></li>
+          <li><span class="r-emoji">🔮</span><b>Vidente</b><span>Pergunta se uma letra está na palavra rival. Só ele vê a resposta.</span></li>
+          <li class="r-impostor"><span class="r-emoji">🎭</span><b>Impostor</b><span>Joga escondido pelo time rival e já sabe a palavra. Quer enganar o próprio time.</span></li>
+          <li><span class="r-emoji">🛡️</span><b>Guardião</b><span>O primeiro erro dele no duelo não tira vida.</span></li>
+          <li><span class="r-emoji">🙂</span><b>Cidadão</b><span>Sem poder especial, mas com um voto que vale ouro.</span></li>
+        </ul>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 3">3</button>
+    </section>
+
+    <!-- 4 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Discussão: quem é o impostor?</h2>
+        <p>Cada time conversa <b>baixinho</b> sobre qual pode ser a palavra rival e vota em quem
+          acha que é o impostor. Para acusar alguém, precisa da maioria do time.</p>
+        <div class="outcomes">
+          <div class="bubble good">Pegou o impostor<br><b>+1 ponto</b> e ele sai da rodada</div>
+          <div class="bubble bad">Acusou um inocente<br>o inocente <b>sai da rodada</b> 😱</div>
+        </div>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 4">4</button>
+    </section>
+
+    <!-- 5 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>A roleta escolhe os duelistas</h2>
+        <p>Uma roleta gira para cada time e sorteia um aluno de cada lado.
+          Quem foi sorteado menos vezes tem mais chance de ser o próximo.</p>
+        <div class="mini-wheels" aria-hidden="true">
+          <div class="mini-wheel a"></div>
+          <span class="vs-mini">VS</span>
+          <div class="mini-wheel b"></div>
+        </div>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 5">5</button>
+    </section>
+
+    <!-- 6 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Duelo da forca</h2>
+        <p>Na sua vez, você tem <b>15 segundos</b> para chutar uma letra ou a palavra inteira da palavra rival.
+          Cada duelista tem <b>3 chances</b> por duelo: errou ou o tempo acabou, gasta uma.</p>
+        <ul class="rules">
+          <li><span>✅</span>Letra certa: aparece para todos e você <b>joga de novo</b></li>
+          <li><span>❌</span>Letra errada: <b>−1 ❤️</b></li>
+          <li><span>💥</span>Palavra errada: <b>−2 ❤️</b></li>
+          <li><span>⏰</span>O tempo acabou: <b>perde a vez</b></li>
+          <li><span>🎯</span>Acabaram as chances dos dois: o duelo termina</li>
+        </ul>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 6">6</button>
+    </section>
+
+    <!-- 7 -->
+    <section class="stop">
+      <div class="stop-card">
+        <h2>Volta e meia, tudo de novo</h2>
+        <p>O jogo anda sozinho: depois de cada duelo vem outra discussão, outra roleta e outro duelo.
+          Quem perde todas as vidas fica fora até a próxima rodada. Se o time inteiro cair, o outro time ganha o ponto.</p>
+        <svg class="cycle" viewBox="0 0 260 200" role="img" aria-label="Discussão, roleta e duelo, em ciclo">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 Z" fill="#1e1b3a"/>
+            </marker>
+          </defs>
+          <path d="M150 30 C 215 30, 240 95, 205 135" fill="none" stroke="#1e1b3a" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+          <path d="M175 168 C 140 190, 105 190, 80 170" fill="none" stroke="#1e1b3a" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+          <path d="M48 135 C 18 95, 40 35, 100 28" fill="none" stroke="#1e1b3a" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#arrow)"/>
+          <g class="cyc"><circle cx="126" cy="30" r="25" fill="#ebe2f6" stroke="#1e1b3a" stroke-width="2.5"/><text x="126" y="39" text-anchor="middle" font-size="24">💬</text></g>
+          <g class="cyc"><circle cx="200" cy="160" r="25" fill="#fff3c4" stroke="#1e1b3a" stroke-width="2.5"/><text x="200" y="169" text-anchor="middle" font-size="24">🎡</text></g>
+          <g class="cyc"><circle cx="56" cy="160" r="25" fill="#fde1e5" stroke="#1e1b3a" stroke-width="2.5"/><text x="56" y="169" text-anchor="middle" font-size="24">⚔️</text></g>
+        </svg>
+      </div>
+      <button class="pin" type="button" aria-label="Parada 7">7</button>
+    </section>
+
+    <!-- 8: tesouro -->
+    <section class="stop treasure">
+      <div class="stop-card">
+        <h2>O tesouro: a palavra!</h2>
+        <p>Quem descobrir a palavra rival ganha <b>+1 ponto</b> para o time e os impostores são revelados.
+          Depois vem uma nova rodada: palavras novas, classes novas e vidas cheias.
+          Vence o jogo o primeiro time que chegar aos pontos combinados (5, se o mediador não mudar).</p>
+      </div>
+      <button class="pin x" type="button" aria-label="Parada 8: tesouro">✕</button>
+    </section>
+  </main>
+
+  <nav class="presenter" aria-label="Apresentação">
+    <button id="prev" class="btn" type="button" aria-label="Parada anterior">◀</button>
+    <span id="step-label" aria-live="polite">1 de 8</span>
+    <button id="next" class="btn primary" type="button" aria-label="Próxima parada">▶</button>
+    <button id="show-all" class="btn ghost" type="button">Ver tudo</button>
+  </nav>
+
+  <script src="js/mapa.js"></script>
+</body>
+</html>
