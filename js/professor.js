@@ -99,9 +99,7 @@ function openRoom(r) {
   localStorage.setItem(ROOM_KEY, r.code);
   $('#create').hidden = true;
   $('#panel').hidden = false;
-  const url = new URL('index.html', location.href);
-  url.search = '?sala=' + r.code;
-  $('#join-url').textContent = url.href;
+  $('#join-url').textContent = joinUrl();
   watchRoom(room.id, load);
   setInterval(tick, 250);
   load();
@@ -805,6 +803,43 @@ $('#shuffle').addEventListener('click', async () => {
   toast(running() ? 'Times embaralhados! As classes mudam na próxima rodada.' : 'Times embaralhados!');
   load();
 });
+
+// ---------- QR Code para os alunos entrarem ----------
+
+// Link do jogo; com uma sala aberta, já leva o código (o aluno só digita o nome)
+function joinUrl() {
+  const url = new URL(typeof GAME_URL !== 'undefined' && GAME_URL ? GAME_URL : new URL('index.html', location.href));
+  if (room) url.search = '?sala=' + room.code;
+  return url.href;
+}
+
+function openQr() {
+  const link = joinUrl();
+  if (typeof qrcode === 'undefined') {
+    $('#qr-code').innerHTML = '<p class="error">Não consegui carregar o gerador de QR Code. Confira a internet.</p>';
+  } else {
+    const qr = qrcode(0, 'M');
+    qr.addData(link);
+    qr.make();
+    $('#qr-code').innerHTML = qr.createSvgTag({ scalable: true, margin: 2 });
+  }
+  $('#qr-room').innerHTML = room
+    ? `Sala <b>${esc(room.code)}</b>: é só entrar e digitar o nome`
+    : 'Crie uma sala para o QR Code já levar o código.';
+  $('#qr-link').textContent = link.replace(/^https?:\/\//, '');
+  $('#qr-modal').hidden = false;
+  $('#qr-close').focus();
+}
+
+function closeQr() {
+  $('#qr-modal').hidden = true;
+  $('#qr-open').focus();
+}
+
+$('#qr-open').addEventListener('click', openQr);
+$('#qr-close').addEventListener('click', closeQr);
+$('#qr-modal').addEventListener('click', (e) => { if (e.target === $('#qr-modal')) closeQr(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#qr-modal').hidden) closeQr(); });
 
 // ---------- Início ----------
 
